@@ -1,0 +1,32 @@
+name: API Integration Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Flask
+        run: pip install flask
+
+      - name: Run Flask API in Background
+        run: |
+          nohup python app.py &
+          sleep 5
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run API Test with Newman
+        run: newman run collection.json
